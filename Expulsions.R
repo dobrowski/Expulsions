@@ -47,13 +47,14 @@ exp <- tbl(con, "EXP") %>%
                ) %>%
  #   head(20) %>%
     collect() %>% 
-    left_join(codebook)
+    left_join(codebook) %>%
+    mutate(district_name_short = str_replace_all(district_name, "Unified", "U") %>%
+               str_replace_all("Union", "U") %>%
+               str_replace_all("Elementary", "E") %>%
+               str_replace_all("Monterey County", "MC") 
+           
+    )
 
-
-# exp.wash <- exp %>%
-#     filter(district_code == "66092",
-#            reporting_category == "GM")
-# 
 
 
 exp.ta <- exp %>%
@@ -69,13 +70,7 @@ exp.ta <- exp %>%
 exp %>%
     filter(reporting_category == "TA",
                      aggregate_level != "C"
-    ) %>%
-    mutate(district_name_short = str_replace_all(district_name, "Unified", "U") %>%
-               str_replace_all("Union", "U") %>%
-               str_replace_all("Elementary", "E") %>%
-               str_replace_all("Monterey County", "MC") 
-               
-           ) %>%
+    )  %>%
     ggplot( aes(x= academic_year, y = total_expulsions)) + 
     geom_col() + 
     facet_wrap(vars(district_name_short)) + 
@@ -84,7 +79,7 @@ exp %>%
          y = "Total Expulsions",
          x = "Academic Year", 
          caption = "Source: CDE Downloadable Data Files \n https://www.cde.ca.gov/ds/sd/sd/filesed.asp\nCreated by: David Dobrowski, MCOE")
-)
+
 
 
 
@@ -94,12 +89,6 @@ exp %>%
     filter(reporting_category %in% c("GM", "GF") ,
            aggregate_level != "C"
     ) %>%
-    mutate(district_name_short = str_replace_all(district_name, "Unified", "U") %>%
-               str_replace_all("Union", "U") %>%
-               str_replace_all("Elementary", "E") %>%
-               str_replace_all("Monterey County", "MC") 
-           
-    ) %>%
     ggplot( aes(x= academic_year, y = total_expulsions, fill = definition)) + 
     geom_col() + 
     facet_wrap(vars(district_name_short)) + 
@@ -108,21 +97,12 @@ exp %>%
          y = "Total Expulsions",
          x = "Academic Year", 
          caption = "Source: CDE Downloadable Data Files \n https://www.cde.ca.gov/ds/sd/sd/filesed.asp\nCreated by: David Dobrowski, MCOE")
-)
-
-
 
 
 
 exp %>%
     filter(str_starts(reporting_category,"R") ,
            aggregate_level != "C"
-    ) %>%
-    mutate(district_name_short = str_replace_all(district_name, "Unified", "U") %>%
-               str_replace_all("Union", "U") %>%
-               str_replace_all("Elementary", "E") %>%
-               str_replace_all("Monterey County", "MC") 
-           
     ) %>%
     ggplot( aes(x= academic_year, y = total_expulsions, fill = definition)) + 
     geom_col() + 
