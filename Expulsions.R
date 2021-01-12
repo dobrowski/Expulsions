@@ -366,4 +366,15 @@ exp %>%
     filter( !str_detect(name,"defiance_only") ) %>%
     plot.it.all.reason(" by Reason ")
 
+### Table -------
+
+
+exp.table <- exp %>%
+    filter(reporting_category == "TA",
+           aggregate_level %in% c("D1","D")
+    ) %>% 
+    select(academic_year, district_name_short, total_expulsions) %>%
+    pivot_wider(names_from = academic_year, id_cols = district_name_short, values_from = total_expulsions)
+
+
 
